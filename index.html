@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Re-Bath of New England — Call Center Scorecard MTD</title>
+<meta name="viewport" content="width=1920, initial-scale=1" />
+<meta http-equiv="refresh" content="300" />
+<style>
+  :root {
+    color-scheme: light;
+    --rb-red: #A90533;
+    --rb-slate: #435465;
+    --rb-white: #FFFFFF;
+    --rb-clean-blue: #8CB6C9;
+    --rb-dark-grey: #6D6E70;
+    --rb-light-grey: #EEEEEE;
+    --rb-maroon: #5E3B3F;
+    --rb-green: #2E7D32;
+    --rb-font-heading: Georgia, 'Times New Roman', serif;
+    --rb-font-body: Arial, Helvetica, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    font-family: var(--rb-font-body);
+    color: var(--rb-dark-grey);
+    background: var(--rb-white);
+    font-size: 22px;
+    line-height: 1.35;
+    overflow: auto;
+  }
+  .wrap { padding: 28px 36px; min-height: 100vh; display: flex; flex-direction: column; }
+
+  header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 18px; border-bottom: 3px solid var(--rb-clean-blue); margin-bottom: 22px; }
+  .brand { display: flex; align-items: baseline; gap: 18px; }
+  .brand-mark { font-family: var(--rb-font-heading); font-weight: bold; font-size: 56px; color: var(--rb-red); letter-spacing: -1px; line-height: 1; }
+  .brand-sub { font-family: var(--rb-font-body); font-weight: bold; color: var(--rb-slate); font-size: 22px; text-transform: uppercase; letter-spacing: 2.5px; }
+  .title { text-align: right; }
+  .title .t1 { font-family: var(--rb-font-heading); color: var(--rb-slate); font-size: 38px; font-weight: bold; line-height: 1; }
+  .title .t2 { font-size: 16px; color: var(--rb-dark-grey); margin-top: 8px; letter-spacing: 1.5px; text-transform: uppercase; }
+  .title .t2 strong { color: var(--rb-slate); }
+
+  .kpi-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px; margin-bottom: 22px; }
+  .kpi { background: var(--rb-white); border: 3px solid var(--rb-clean-blue); border-radius: 6px; padding: 22px; }
+  .kpi .label { font-size: 14px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--rb-dark-grey); font-weight: bold; margin-bottom: 12px; }
+  .kpi .value { font-family: var(--rb-font-heading); font-size: 58px; color: var(--rb-slate); font-weight: bold; line-height: 1; }
+  .kpi .sub { font-size: 15px; color: var(--rb-dark-grey); margin-top: 10px; }
+
+  .card { background: var(--rb-white); border: 1px solid var(--rb-light-grey); border-radius: 6px; padding: 22px 28px; flex: 1; display: flex; flex-direction: column; min-height: 0; }
+  .card h2 { font-family: var(--rb-font-heading); color: var(--rb-slate); margin: 0 0 16px 0; font-size: 28px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 21px; }
+  th { font-family: var(--rb-font-body); font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; font-size: 13px; color: var(--rb-slate); text-align: right; padding: 12px 8px; border-bottom: 3px solid var(--rb-slate); }
+  th:first-child, td:first-child { text-align: left; }
+  td { padding: 13px 8px; text-align: right; border-bottom: 1px solid var(--rb-light-grey); }
+  td.setter-name { color: var(--rb-slate); font-weight: bold; font-size: 21px; }
+  tr.total td { font-weight: bold; color: var(--rb-slate); border-top: 3px solid var(--rb-slate); border-bottom: none; background: var(--rb-light-grey); font-size: 21px; }
+  .pill { display: inline-block; padding: 4px 12px; border-radius: 16px; font-size: 17px; font-weight: bold; min-width: 68px; text-align: center; }
+  .pill.good { background: rgba(46, 125, 50, 0.12); color: var(--rb-green); }
+  .pill.warn { background: rgba(169, 5, 51, 0.12); color: var(--rb-red); }
+  .pill.neutral { background: var(--rb-light-grey); color: var(--rb-dark-grey); }
+  .rank { color: var(--rb-dark-grey); font-weight: normal; margin-right: 10px; display: inline-block; min-width: 28px; }
+  .rank.top { color: var(--rb-red); font-weight: bold; }
+
+  footer { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--rb-light-grey); font-size: 14px; color: var(--rb-dark-grey); display: flex; justify-content: space-between; }
+
+  .err { padding: 28px; border: 3px solid var(--rb-red); background: rgba(169, 5, 51, 0.05); border-radius: 6px; color: var(--rb-red); font-weight: bold; font-size: 22px; }
+  .loading { padding: 28px; color: var(--rb-dark-grey); font-style: italic; font-size: 22px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <span class="brand-mark">RE&middot;BATH</span>
+      <span class="brand-sub">of New England</span>
+    </div>
+    <div class="title">
+      <div class="t1">Call Center Scorecard</div>
+      <div class="t2">Month to Date &middot; Refreshed <strong id="refreshed">&mdash;</strong></div>
+    </div>
+  </header>
+
+  <div id="status" class="loading">Loading latest data&hellip;</div>
+
+  <div id="dashboard" style="display:none; flex:1; display:flex; flex-direction:column; min-height:0;">
+    <div class="kpi-row">
+      <div class="kpi"><div class="label">Net Sales MTD</div><div class="value" id="kpi-rev">&mdash;</div><div class="sub" id="kpi-rev-sub">&mdash;</div></div>
+      <div class="kpi"><div class="label">Appts Set</div><div class="value" id="kpi-set">&mdash;</div><div class="sub" id="kpi-set-sub">&mdash;</div></div>
+      <div class="kpi"><div class="label">Show Rate</div><div class="value" id="kpi-show">&mdash;</div><div class="sub">Run / Set</div></div>
+      <div class="kpi"><div class="label">Sold %</div><div class="value" id="kpi-sold">&mdash;</div><div class="sub">Sold / Run</div></div>
+      <div class="kpi"><div class="label">Cancels</div><div class="value" id="kpi-cancel">&mdash;</div><div class="sub" id="kpi-cancel-sub">&mdash;</div></div>
+    </div>
+
+    <div class="card">
+      <h2>Setter Leaderboard (Net Sales MTD)</h2>
+      <table id="setter-table">
+        <thead>
+          <tr>
+            <th>Setter</th>
+            <th>Set</th>
+            <th>Canceled</th>
+            <th>Run</th>
+            <th>Demo #</th>
+            <th>Sold</th>
+            <th>Demo %</th>
+            <th>Show Rate</th>
+            <th>Sold %</th>
+            <th>Cancel %</th>
+            <th>Net Sales</th>
+          </tr>
+        </thead>
+        <tbody id="setter-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>
+    <div>Source: Salesforce &ldquo;Phone Team Results&rdquo; &middot; Refreshes daily at 9:00am &middot; Page reloads every 5 min</div>
+    <div id="file-name">&mdash;</div>
+  </footer>
+</div>
+
+<script>
+const CSV_URL = 'data/call-center-mtd.csv?cb=' + Date.now();
+
+function fmtMoney(n) {
+  if (!isFinite(n)) return '—';
+  if (n >= 1000000) return '$' + (n / 1000000).toFixed(2) + 'M';
+  if (n >= 1000) return '$' + (n / 1000).toFixed(1) + 'K';
+  return '$' + n.toLocaleString(undefined, { maximumFractionDigits: 0 });
+}
+function fmtMoneyFull(n) {
+  if (!isFinite(n)) return '—';
+  return '$' + n.toLocaleString(undefined, { maximumFractionDigits: 0 });
+}
+function fmtPct(n) {
+  if (!isFinite(n) || n === null) return '—';
+  return n.toFixed(1) + '%';
+}
+function fmtNum(n) {
+  if (!isFinite(n)) return '—';
+  return n % 1 === 0 ? n.toLocaleString() : n.toFixed(1);
+}
+
+function parseCsv(text) {
+  const lines = text.split(/\r?\n/).map(l => l.trimEnd()).filter(l => l.length > 0);
+  if (lines.length < 2) return { headers: [], rows: [] };
+  const headers = lines[0].split(',').map(h => h.trim());
+  const rows = lines.slice(1).map(line => {
+    const cells = line.split(',').map(c => c.trim());
+    const obj = {};
+    headers.forEach((h, i) => { obj[h] = cells[i]; });
+    return obj;
+  });
+  return { headers, rows };
+}
+
+function row2num(r) {
+  return {
+    Rep: r.Rep,
+    Set: parseFloat(r.Set) || 0,
+    Canceled: parseFloat(r.Canceled) || 0,
+    Run: parseFloat(r.Run) || 0,
+    DemoNum: parseFloat(r.DemoNum) || 0,
+    Sold: parseFloat(r.Sold) || 0,
+    DemoPct: parseFloat(r.DemoPct) || 0,
+    SoldPct: parseFloat(r.SoldPct) || 0,
+    CancelPct: parseFloat(r.CancelPct) || 0,
+    NetSales: parseFloat(r.NetSales) || 0,
+  };
+}
+
+function pillClass(val, teamAvg) {
+  if (val >= teamAvg) return 'good';
+  if (val >= teamAvg * 0.6) return 'neutral';
+  return 'warn';
+}
+
+function renderTable(setters, total, teamShowRate, teamSoldPct) {
+  const body = document.getElementById('setter-body');
+  body.innerHTML = '';
+  const sorted = [...setters].sort((a, b) => b.NetSales - a.NetSales);
+  sorted.forEach((r, idx) => {
+    const showRate = r.Set > 0 ? (r.Run / r.Set) * 100 : 0;
+    const tr = document.createElement('tr');
+    const rankCls = idx < 3 ? 'rank top' : 'rank';
+    tr.innerHTML =
+      '<td class="setter-name"><span class="' + rankCls + '">' + (idx + 1) + '.</span>' + r.Rep + '</td>' +
+      '<td>' + fmtNum(r.Set) + '</td>' +
+      '<td>' + fmtNum(r.Canceled) + '</td>' +
+      '<td>' + fmtNum(r.Run) + '</td>' +
+      '<td>' + fmtNum(r.DemoNum) + '</td>' +
+      '<td>' + fmtNum(r.Sold) + '</td>' +
+      '<td><span class="pill ' + pillClass(r.DemoPct, 90) + '">' + fmtPct(r.DemoPct) + '</span></td>' +
+      '<td><span class="pill ' + pillClass(showRate, teamShowRate) + '">' + fmtPct(showRate) + '</span></td>' +
+      '<td><span class="pill ' + pillClass(r.SoldPct, teamSoldPct) + '">' + fmtPct(r.SoldPct) + '</span></td>' +
+      '<td>' + fmtPct(r.CancelPct) + '</td>' +
+      '<td><strong>' + fmtMoneyFull(r.NetSales) + '</strong></td>';
+    body.appendChild(tr);
+  });
+  const teamShowRateDisp = total.Set > 0 ? fmtPct((total.Run / total.Set) * 100) : '—';
+  const totalTr = document.createElement('tr');
+  totalTr.className = 'total';
+  totalTr.innerHTML =
+    '<td>TEAM TOTAL</td>' +
+    '<td>' + fmtNum(total.Set) + '</td>' +
+    '<td>' + fmtNum(total.Canceled) + '</td>' +
+    '<td>' + fmtNum(total.Run) + '</td>' +
+    '<td>' + fmtNum(total.DemoNum) + '</td>' +
+    '<td>' + fmtNum(total.Sold) + '</td>' +
+    '<td>' + fmtPct(total.DemoPct) + '</td>' +
+    '<td>' + teamShowRateDisp + '</td>' +
+    '<td>' + fmtPct(total.SoldPct) + '</td>' +
+    '<td>' + fmtPct(total.CancelPct) + '</td>' +
+    '<td>' + fmtMoneyFull(total.NetSales) + '</td>';
+  body.appendChild(totalTr);
+}
+
+async function boot() {
+  try {
+    const resp = await fetch(CSV_URL, { cache: 'no-store' });
+    if (!resp.ok) throw new Error('CSV fetch failed: HTTP ' + resp.status);
+    const text = await resp.text();
+    const { rows } = parseCsv(text);
+    const all = rows.map(row2num);
+    const totalRow = all.find(r => r.Rep.toUpperCase() === 'TOTAL');
+    const setters = all.filter(r => r.Rep.toUpperCase() !== 'TOTAL' && r.Rep.toUpperCase() !== 'UNASSIGNED');
+
+    const total = totalRow || {
+      Set: setters.reduce((s, r) => s + r.Set, 0),
+      Canceled: setters.reduce((s, r) => s + r.Canceled, 0),
+      Run: setters.reduce((s, r) => s + r.Run, 0),
+      DemoNum: setters.reduce((s, r) => s + r.DemoNum, 0),
+      Sold: setters.reduce((s, r) => s + r.Sold, 0),
+      DemoPct: 0,
+      SoldPct: 0,
+      CancelPct: 0,
+      NetSales: setters.reduce((s, r) => s + r.NetSales, 0),
+    };
+
+    const teamShowRate = total.Set > 0 ? (total.Run / total.Set) * 100 : 0;
+    const teamSoldPct = total.SoldPct || (total.Run > 0 ? (total.Sold / total.Run) * 100 : 0);
+
+    document.getElementById('kpi-rev').textContent = fmtMoney(total.NetSales);
+    document.getElementById('kpi-rev-sub').textContent = fmtMoneyFull(total.NetSales);
+    document.getElementById('kpi-set').textContent = fmtNum(total.Set);
+    document.getElementById('kpi-set-sub').textContent = fmtNum(total.Run) + ' ran';
+    document.getElementById('kpi-show').textContent = fmtPct(teamShowRate);
+    document.getElementById('kpi-sold').textContent = fmtPct(teamSoldPct);
+    document.getElementById('kpi-cancel').textContent = fmtNum(total.Canceled);
+    document.getElementById('kpi-cancel-sub').textContent = fmtPct(total.CancelPct) + ' cancel rate';
+
+    document.getElementById('refreshed').textContent = new Date().toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
+
+    document.getElementById('status').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'flex';
+
+    renderTable(setters, total, teamShowRate, teamSoldPct);
+  } catch (err) {
+    const el = document.getElementById('status');
+    el.className = 'err';
+    el.textContent = 'Could not load dashboard data: ' + (err && err.message ? err.message : String(err));
+  }
+}
+
+boot();
+</script>
+</body>
+</html>
