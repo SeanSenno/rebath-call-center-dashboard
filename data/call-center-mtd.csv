@@ -1,9 +1,9 @@
 Rep,Set,Canceled,Run,DemoNum,Sold,DemoPct,SoldPct,CancelPct,NetSales
-Hanna Goff,11,1,0,0,0,0,0,9.09,0
-Kevin Trumbour,16,0,0,0,0,0,0,0,0
-Laurie Negri,4,0,0,0,0,0,0,0,0
-Lee Carosi,15,1,3,2,1,66.67,33.3,6.67,30245.54
-Michele Proulx,4,0,1,1,1,100,100,0,16385
+Hanna Goff,11,1,2,2,0,100,0,9.09,0
+Kevin Trumbour,16,0,1,1,0,100,0,0,0
+Laurie Negri,5,0,1,1,1,100,100,0,15857
+Lee Carosi,16,1,5,3.5,2,80,40,6.25,50027.89
+Michele Proulx,5,0,1,1,1,100,100,0,16385
 Nicholas Persad,9,0,1,1,1,100,100,0,2651.92
-Tiondra Hands,17,3,0,0,0,0,0,17.65,0
-TOTAL,76,5,5,4,3,80,60,6.58,49282.46
+Tiondra Hands,18,3,3,3,0,100,0,16.67,0
+TOTAL,80,5,14,12.5,5,92.86,35.7,6.25,84921.81
