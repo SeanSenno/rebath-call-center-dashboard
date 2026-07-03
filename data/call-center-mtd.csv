@@ -1,6 +1,7 @@
 Rep,Set,Canceled,Run,DemoNum,Sold,DemoPct,SoldPct,CancelPct,NetSales
-Hanna Goff,4,0,0,0,0,0,0,0,0
-Kevin Trumbour,12,0,0,0,0,0,0,0,0
-Laurie Negri,1,0,0,0,0,0,0,0,0
-Tiondra Hands,13,0,0,0,0,0,0,0,0
-TOTAL,30,0,0,0,0,0,0,0,0
+Hanna Goff,4,0,1,1,0,100,0,0,0
+Kevin Trumbour,11,0,0,0,0,0,0,0,0
+Laurie Negri,2,0,0,0,0,0,0,0,0
+Michele Proulx,1,0,0,0,0,0,0,0,0
+Tiondra Hands,14,0,1,1,0,100,0,0,0
+TOTAL,32,0,2,2,0,100,0,0,0
